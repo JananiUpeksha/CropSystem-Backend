@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -19,10 +20,10 @@ public class StaffEntity {
     private String firstName;
     private String lastName;
     private String email;
-    private Date dob;
+    private LocalDate dob;
     private String address;
     private String contact;
-    private Date joinDate;
+    private LocalDate joinDate;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne(mappedBy = "staff")

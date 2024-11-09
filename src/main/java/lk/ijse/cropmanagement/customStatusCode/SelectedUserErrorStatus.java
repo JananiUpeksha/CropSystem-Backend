@@ -1,6 +1,6 @@
 package lk.ijse.cropmanagement.customStatusCode;
 
-import lk.ijse.notecollectorspring.dto.UserStatus;
+import lk.ijse.cropmanagement.dto.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
