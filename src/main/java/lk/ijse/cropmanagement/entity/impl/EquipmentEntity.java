@@ -1,23 +1,25 @@
-package lk.ijse.cropmanagement.entity;
-
+package lk.ijse.cropmanagement.entity.impl;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "vehicle")
+@Table(name = "equipment")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class VehicleEntity {
+public class EquipmentEntity {
     @Id
-    private String vehicleId;
-    private String plateNumber;
-    private String category;
-    private String fuelType;
+    private String equipmentId;
+    private String type;
+    private String name;
     private String status;
-    private String remarks;
+
+    @ManyToOne
+    @JoinColumn(name = "field_id")
+    private FieldEntity field;
+
     @ManyToOne
     @JoinColumn(name = "staff_id")
     private StaffEntity staff;

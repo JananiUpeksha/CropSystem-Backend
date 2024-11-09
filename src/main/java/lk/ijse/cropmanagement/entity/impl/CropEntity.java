@@ -1,11 +1,8 @@
-package lk.ijse.cropmanagement.entity;
+package lk.ijse.cropmanagement.entity.impl;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "crop")

@@ -1,4 +1,4 @@
-package lk.ijse.cropmanagement.entity;
+package lk.ijse.cropmanagement.entity.impl;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
