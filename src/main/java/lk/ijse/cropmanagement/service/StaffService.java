@@ -9,4 +9,11 @@ import java.util.List;
 public interface StaffService {
     void saveStaff(StaffDTO staffDTO);
 
+    StaffDTO getStaffById(String staffId);
+
+    List<StaffDTO> getAllStaff();
+
+    void deleteStaff(String staffId);
+
+    void updateStaff(String staffId, StaffDTO staffDTO);
 }

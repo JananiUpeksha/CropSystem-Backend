@@ -34,16 +34,22 @@ public class StaffServiceImpl implements StaffService {
         System.out.println("Received StaffDTO: " + staffDTO);
 
         // Generate the Staff ID dynamically using the AppUtill
-        staffDTO.setStaffId(appUtill.generateId("STAFF"));
+        String generatedStaffId = appUtill.generateId("STAFF");
+        staffDTO.setStaffId(generatedStaffId);
 
         // Log the staff ID generation
-        System.out.println("Generated Staff ID: " + staffDTO.getStaffId());
+        System.out.println("Generated Staff ID: " + generatedStaffId);
 
         // Convert StaffDTO to StaffEntity using the Mapping class
         StaffEntity staffEntity = mapping.toStaffEntity(staffDTO);
 
         // Log the StaffEntity object before saving
         System.out.println("Converted StaffEntity: " + staffEntity);
+
+        // Ensure the staffId is properly set before persisting
+        if (staffEntity.getStaffId() == null || staffEntity.getStaffId().isEmpty()) {
+            throw new DataPersistException("Staff ID is missing.");
+        }
 
         // Save the StaffEntity to the database using the DAO
         StaffEntity savedStaff = staffDAO.save(staffEntity);
@@ -55,6 +61,49 @@ public class StaffServiceImpl implements StaffService {
 
         // Log successful saving
         System.out.println("Staff saved successfully: " + savedStaff);
+    }
+
+    @Override
+    public StaffDTO getStaffById(String staffId) {
+        Optional<StaffEntity> staffEntity = staffDAO.findById(staffId);
+        if (!staffEntity.isPresent()) {
+            throw new RuntimeException("Staff not found for ID: " + staffId);
+        }
+        return mapping.toStaffDTO(staffEntity.get());
+    }
+
+    @Override
+    public List<StaffDTO> getAllStaff() {
+        return staffDAO.findAll().stream()
+                .map(mapping::toStaffDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteStaff(String staffId) {
+        Optional<StaffEntity> staffEntity = staffDAO.findById(staffId);
+        if (!staffEntity.isPresent()) {
+            throw new RuntimeException("Staff not found for ID: " + staffId);
+        }
+        staffDAO.deleteById(staffId);
+    }
+
+    @Override
+    public void updateStaff(String staffId, StaffDTO staffDTO) {
+        Optional<StaffEntity> staffEntity = staffDAO.findById(staffId);
+        if (!staffEntity.isPresent()) {
+            throw new RuntimeException("Staff not found for ID: " + staffId);
+        }
+        StaffEntity existingStaff = staffEntity.get();
+        existingStaff.setFirstName(staffDTO.getFirstName());
+        existingStaff.setLastName(staffDTO.getLastName());
+        existingStaff.setEmail(staffDTO.getEmail());
+        existingStaff.setDob(staffDTO.getDob());
+        existingStaff.setAddress(staffDTO.getAddress());
+        existingStaff.setContact(staffDTO.getContact());
+        existingStaff.setJoinDate(staffDTO.getJoinDate());
+        existingStaff.setRole(staffDTO.getRole());
+        staffDAO.save(existingStaff);
     }
 
 

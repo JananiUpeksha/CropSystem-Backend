@@ -67,9 +67,20 @@ public class Mapping {
     }
 
     // Mapping methods for Field
-    public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
+   /* public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
         return modelMapper.map(fieldDTO, FieldEntity.class);
     }
+*/
+
+        public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
+            FieldEntity fieldEntity = new FieldEntity();
+
+            // Set location after converting from java.awt.Point to org.springframework.data.geo.Point
+            fieldEntity.setLocation(new org.springframework.data.geo.Point(fieldDTO.getLocation().getX(), fieldDTO.getLocation().getY()));
+
+            // Other field mappings
+            return fieldEntity;
+        }
 
     public FieldDTO toFieldDTO(FieldEntity fieldEntity) {
         return modelMapper.map(fieldEntity, FieldDTO.class);

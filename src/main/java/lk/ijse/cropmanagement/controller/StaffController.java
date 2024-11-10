@@ -38,5 +38,51 @@ public class StaffController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping(value = "/{staffId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StaffDTO> getStaffById(@PathVariable("staffId") String staffId) {
+        if (!RegexProcess.staffIdMatcher(staffId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            StaffDTO staffDTO = staffService.getStaffById(staffId);
+            return new ResponseEntity<>(staffDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StaffDTO>> getAllStaff() {
+        return new ResponseEntity<>(staffService.getAllStaff(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{staffId}")
+    public ResponseEntity<Void> deleteStaff(@PathVariable("staffId") String staffId) {
+        try {
+            if (!RegexProcess.staffIdMatcher(staffId)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            staffService.deleteStaff(staffId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/{staffId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateStaff(@PathVariable("staffId") String staffId, @RequestBody StaffDTO staffDTO) {
+        try {
+            if (!RegexProcess.staffIdMatcher(staffId)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            staffService.updateStaff(staffId, staffDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }
