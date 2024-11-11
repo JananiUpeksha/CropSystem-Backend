@@ -72,15 +72,30 @@ public class Mapping {
     }
 */
 
-        public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
-            FieldEntity fieldEntity = new FieldEntity();
+    public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
+        FieldEntity fieldEntity = new FieldEntity();
 
-            // Set location after converting from java.awt.Point to org.springframework.data.geo.Point
+        // Set location after converting from java.awt.Point to org.springframework.data.geo.Point
+        if (fieldDTO.getLocation() != null) {
             fieldEntity.setLocation(new org.springframework.data.geo.Point(fieldDTO.getLocation().getX(), fieldDTO.getLocation().getY()));
-
-            // Other field mappings
-            return fieldEntity;
         }
+
+        // Map name and size
+        fieldEntity.setName(fieldDTO.getName());
+        fieldEntity.setSize(fieldDTO.getSize());
+
+        // Encode image fields (image1 and image2) to Base64 if they exist
+        if (fieldDTO.getImage1() != null) {
+            fieldEntity.setImage1(fieldDTO.getImage1());
+        }
+        if (fieldDTO.getImage2() != null) {
+            fieldEntity.setImage2(fieldDTO.getImage2());
+        }
+
+        // Other field mappings
+        return fieldEntity;
+    }
+
 
     public FieldDTO toFieldDTO(FieldEntity fieldEntity) {
         return modelMapper.map(fieldEntity, FieldDTO.class);

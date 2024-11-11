@@ -37,7 +37,7 @@ public class AppUtill {
         return entityType + String.format("%03d", lastIdInt);
     }
 
-    public static String profilePicToBase64(byte[] profilePic) {
-        return java.util.Base64.getEncoder().encodeToString(profilePic);
+    public static String imageToBase64(byte[] image) {
+        return java.util.Base64.getEncoder().encodeToString(image);
     }
 }

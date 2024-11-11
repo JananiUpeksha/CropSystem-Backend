@@ -31,6 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.geo.Point;
 
 import java.awt.*;
 import java.util.Map;
@@ -52,5 +53,10 @@ public class FieldDTO {
 
     // Using Map<String, String> to store crop IDs and potentially other metadata
     private Map<String, String> cropIds; // Crop ID as key and crop name as value
+
+    public void setLocation(org.springframework.data.geo.Point point) {
+        this.location = point;  // Assign the input 'point' to the 'location' field
+    }
+
 }
 

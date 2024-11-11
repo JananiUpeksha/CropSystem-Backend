@@ -14,6 +14,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,32 +41,39 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public void saveField(FieldDTO fieldDTO) {
-        // Generate the Field ID dynamically
+        // Generate the Field ID dynamically only once
         synchronized (lock) {
             String generatedFieldId = appUtill.generateId("FIELD");
             fieldDTO.setFieldId(generatedFieldId);
         }
 
         // Encode image data if provided
-        encodeImage(fieldDTO);
+        encodeImage(fieldDTO);  // Ensure image fields are Base64 encoded
 
         // Map FieldDTO to FieldEntity
         FieldEntity fieldEntity = mapping.toFieldEntity(fieldDTO);
 
-        // Manually assign the generated field ID to the entity
-        // This ensures the ID is set before the entity is persisted
-        if (fieldEntity.getFieldId() == null) {
-            fieldEntity.setFieldId(appUtill.generateId("FIELD"));
+        // Assign the generated field ID to the entity
+        fieldEntity.setFieldId(fieldDTO.getFieldId());
+
+        // Fetch StaffEntity objects using staffIds (keys), checking if staffIds is null
+        Set<StaffEntity> staffEntities = null;
+        if (fieldDTO.getStaffIds() != null) {
+            staffEntities = fieldDTO.getStaffIds().keySet().stream()
+                    .map(staffId -> staffDAO.findById(staffId)
+                            .orElseThrow(() -> new RuntimeException("Staff not found for ID: " + staffId)))
+                    .collect(Collectors.toSet());
         }
 
-        // Fetch StaffEntity objects using staffIds (keys)
-        Set<StaffEntity> staffEntities = fieldDTO.getStaffIds().keySet().stream()
-                .map(staffId -> staffDAO.findById(staffId)
-                        .orElseThrow(() -> new RuntimeException("Staff not found for ID: " + staffId)))
-                .collect(Collectors.toSet());
+        // Set the staff members for the field only if staffEntities is not null
+        if (staffEntities != null) {
+            fieldEntity.setStaffMembers(staffEntities);
 
-        // Set the staff members for the field
-        fieldEntity.setStaffMembers(staffEntities);
+            // Update the staff entities to reflect the new field association
+            for (StaffEntity staffEntity : staffEntities) {
+                staffEntity.getFields().add(fieldEntity);  // Add the field to staff's set of fields
+            }
+        }
 
         // Save the FieldEntity to the database
         FieldEntity savedField = fieldDAO.save(fieldEntity);
@@ -74,22 +82,28 @@ public class FieldServiceImpl implements FieldService {
         if (savedField == null) {
             throw new DataPersistException("Field not saved");
         }
-
-        // Update the staff entities to reflect the new field association
-        for (StaffEntity staffEntity : staffEntities) {
-            staffEntity.getFields().add(savedField);  // Add the field to staff's set of fields
-        }
     }
 
 
-    private void encodeImage(FieldDTO fieldDTO) {
+
+
+    /* private void encodeImage(FieldDTO fieldDTO) {
         if (fieldDTO.getImage1() != null) {
-            fieldDTO.setImage1(appUtill.profilePicToBase64(fieldDTO.getImage1().getBytes()));
+            fieldDTO.setImage1(appUtill.imageToBase64(fieldDTO.getImage1().getBytes()));
         }
         if (fieldDTO.getImage2() != null) {
-            fieldDTO.setImage2(appUtill.profilePicToBase64(fieldDTO.getImage2().getBytes()));
+            fieldDTO.setImage2(appUtill.imageToBase64(fieldDTO.getImage2().getBytes()));
         }
-    }
+    }*/
+   private void encodeImage(FieldDTO fieldDTO) {
+       if (fieldDTO.getImage1() != null) {
+           fieldDTO.setImage1(appUtill.imageToBase64(fieldDTO.getImage1().getBytes()));
+       }
+       if (fieldDTO.getImage2() != null) {
+           fieldDTO.setImage2(appUtill.imageToBase64(fieldDTO.getImage2().getBytes()));
+       }
+   }
+
 
     @Override
     public FieldDTO getFieldById(String fieldId) {
@@ -125,19 +139,23 @@ public class FieldServiceImpl implements FieldService {
         FieldEntity existingField = fieldEntity.get();
 
         existingField.setName(fieldDTO.getName());
-        java.awt.Point location = fieldDTO.getLocation();
+        Point location = fieldDTO.getLocation();
         if (location != null) {
             existingField.setLocation(new Point(location.getX(), location.getY()));
         }
         existingField.setSize(fieldDTO.getSize());
 
+        // Encode image data if provided (image1 and image2)
+        encodeImage(fieldDTO);  // Ensure images are encoded
+
         if (fieldDTO.getImage1() != null) {
-            existingField.setImage1(appUtill.profilePicToBase64(fieldDTO.getImage1().getBytes()));
+            existingField.setImage1(fieldDTO.getImage1());
         }
         if (fieldDTO.getImage2() != null) {
-            existingField.setImage2(appUtill.profilePicToBase64(fieldDTO.getImage2().getBytes()));
+            existingField.setImage2(fieldDTO.getImage2());
         }
 
         fieldDAO.save(existingField);
     }
+
 }
