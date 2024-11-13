@@ -5,13 +5,14 @@ import lk.ijse.cropmanagement.dto.impl.FieldDTO;
 import java.util.List;
 
 public interface FieldService {
-    void saveField(FieldDTO fieldDTO);
 
-    FieldDTO getFieldById(String fieldId);
+    FieldDTO saveField(FieldDTO fieldDTO);
 
     List<FieldDTO> getAllFields();
 
-    void deleteField(String fieldId);
+    FieldDTO getFieldById(String id);
 
-    void updateField(String fieldId, FieldDTO fieldDTO);
+    FieldDTO updateField(FieldDTO dto);
+
+    void deleteField(String id);
 }

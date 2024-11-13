@@ -27,4 +27,8 @@ public class StaffDTO {
     private String userId;                // Representing UserEntity by ID
     private List<FieldDTO> fieldIds;        // Representing FieldEntity list by IDs
     private List<VehicleDTO> vehicleIds;      // Representing VehicleEntity list by IDs
+
+    public String getId() {
+        return this.staffId;
+    }
 }

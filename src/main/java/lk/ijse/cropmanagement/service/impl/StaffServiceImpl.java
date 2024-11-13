@@ -106,5 +106,16 @@ public class StaffServiceImpl implements StaffService {
         staffDAO.save(existingStaff);
     }
 
+    @Override
+    public StaffDTO findStaffById(String staffId) {
+        // Use staffDAO to find the staff entity by staffId
+        StaffEntity staffEntity = staffDAO.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found with ID: " + staffId)); // Throw an exception if not found
+
+        // Convert StaffEntity to StaffDTO using the mapping class
+        return mapping.toStaffDTO(staffEntity);
+    }
+
+
 
 }

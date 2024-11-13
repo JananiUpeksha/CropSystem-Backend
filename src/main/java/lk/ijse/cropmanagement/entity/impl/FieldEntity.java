@@ -24,10 +24,24 @@ public class FieldEntity {
     private String image1;
     @Column(columnDefinition = "LONGTEXT")
     private String image2;
-    @ManyToMany(mappedBy = "fields")
+   /* @ManyToMany(mappedBy = "fields")
     private Set<StaffEntity> staffMembers = new HashSet<>();
 
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CropEntity> crops ;*/
+   @ManyToMany
+   @JoinTable(
+           name = "staff_fields_detail",
+           joinColumns = @JoinColumn(name = "field_id"),
+           inverseJoinColumns = @JoinColumn(name = "staff_id")
+   )
+   private Set<StaffEntity> staffMembers = new HashSet<>();
+
+    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CropEntity> crops ;
+    @ManyToMany(mappedBy = "fieldLogs",cascade = CascadeType.ALL)
+    private List<LogEntity> logs;
+
+
 
 }

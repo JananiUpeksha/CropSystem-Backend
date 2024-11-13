@@ -7,7 +7,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class Mapping {
@@ -24,7 +27,8 @@ public class Mapping {
     }
 
     public List<UserDTO> asUserDTOList(List<UserEntity> userEntityList) {
-        return modelMapper.map(userEntityList, new TypeToken<List<UserDTO>>() {}.getType());
+        return modelMapper.map(userEntityList, new TypeToken<List<UserDTO>>() {
+        }.getType());
     }
 
     // Mapping methods for Staff
@@ -37,7 +41,8 @@ public class Mapping {
     }
 
     public List<StaffDTO> asStaffDTOList(List<StaffEntity> staffEntityList) {
-        return modelMapper.map(staffEntityList, new TypeToken<List<StaffDTO>>() {}.getType());
+        return modelMapper.map(staffEntityList, new TypeToken<List<StaffDTO>>() {
+        }.getType());
     }
 
     // Mapping methods for Vehicle
@@ -50,7 +55,8 @@ public class Mapping {
     }
 
     public List<VehicleDTO> asVehicleDTOList(List<VehicleEntity> vehicleEntityList) {
-        return modelMapper.map(vehicleEntityList, new TypeToken<List<VehicleDTO>>() {}.getType());
+        return modelMapper.map(vehicleEntityList, new TypeToken<List<VehicleDTO>>() {
+        }.getType());
     }
 
     // Mapping methods for Equipment
@@ -63,40 +69,13 @@ public class Mapping {
     }
 
     public List<EquipmentDTO> asEquipmentDTOList(List<EquipmentEntity> equipmentEntityList) {
-        return modelMapper.map(equipmentEntityList, new TypeToken<List<EquipmentDTO>>() {}.getType());
+        return modelMapper.map(equipmentEntityList, new TypeToken<List<EquipmentDTO>>() {
+        }.getType());
     }
-
-    // Mapping methods for Field
-   /* public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
-        return modelMapper.map(fieldDTO, FieldEntity.class);
-    }
-*/
 
     public FieldEntity toFieldEntity(FieldDTO fieldDTO) {
-        FieldEntity fieldEntity = new FieldEntity();
-
-        // Set location after converting from java.awt.Point to org.springframework.data.geo.Point
-        if (fieldDTO.getLocation() != null) {
-            fieldEntity.setLocation(new org.springframework.data.geo.Point(fieldDTO.getLocation().getX(), fieldDTO.getLocation().getY()));
-        }
-
-        // Map name and size
-        fieldEntity.setName(fieldDTO.getName());
-        fieldEntity.setSize(fieldDTO.getSize());
-
-        // Encode image fields (image1 and image2) to Base64 if they exist
-        if (fieldDTO.getImage1() != null) {
-            fieldEntity.setImage1(fieldDTO.getImage1());
-        }
-        if (fieldDTO.getImage2() != null) {
-            fieldEntity.setImage2(fieldDTO.getImage2());
-        }
-
-        // Other field mappings
-        return fieldEntity;
+        return modelMapper.map(fieldDTO, FieldEntity.class);
     }
-
-
     public FieldDTO toFieldDTO(FieldEntity fieldEntity) {
         return modelMapper.map(fieldEntity, FieldDTO.class);
     }
@@ -104,30 +83,5 @@ public class Mapping {
     public List<FieldDTO> asFieldDTOList(List<FieldEntity> fieldEntityList) {
         return modelMapper.map(fieldEntityList, new TypeToken<List<FieldDTO>>() {}.getType());
     }
-
-    // Mapping methods for Crop
-    public CropEntity toCropEntity(CropDTO cropDTO) {
-        return modelMapper.map(cropDTO, CropEntity.class);
-    }
-
-    public CropDTO toCropDTO(CropEntity cropEntity) {
-        return modelMapper.map(cropEntity, CropDTO.class);
-    }
-
-    public List<CropDTO> asCropDTOList(List<CropEntity> cropEntityList) {
-        return modelMapper.map(cropEntityList, new TypeToken<List<CropDTO>>() {}.getType());
-    }
-
-    // Mapping methods for Log
-    public LogEntity toLogEntity(LogDTO logDTO) {
-        return modelMapper.map(logDTO, LogEntity.class);
-    }
-
-    public LogDTO toLogDTO(LogEntity logEntity) {
-        return modelMapper.map(logEntity, LogDTO.class);
-    }
-
-    public List<LogDTO> asLogDTOList(List<LogEntity> logEntityList) {
-        return modelMapper.map(logEntityList, new TypeToken<List<LogDTO>>() {}.getType());
-    }
 }
+
