@@ -83,5 +83,20 @@ public class Mapping {
     public List<FieldDTO> asFieldDTOList(List<FieldEntity> fieldEntityList) {
         return modelMapper.map(fieldEntityList, new TypeToken<List<FieldDTO>>() {}.getType());
     }
+
+    // Mapping methods for Crop
+    public CropEntity toCropEntity(CropDTO cropDTO) {
+        return modelMapper.map(cropDTO, CropEntity.class);
+    }
+
+    public CropDTO toCropDTO(CropEntity cropEntity) {
+        return modelMapper.map(cropEntity, CropDTO.class);
+    }
+
+    public List<CropDTO> asCropDTOList(List<CropEntity> cropEntityList) {
+        return modelMapper.map(cropEntityList, new TypeToken<List<CropDTO>>() {
+        }.getType());
+    }
+
 }
 
