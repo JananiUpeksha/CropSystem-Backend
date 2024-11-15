@@ -18,7 +18,7 @@ public class LogDTO {
     private String logDetails;
     private Date date;
     private String image2;
-    private List<StaffDTO> staffLogIds; // Representing StaffEntity by IDs
-    private List<FieldDTO> fieldLogIds; // Representing FieldEntity by IDs
-    private List<FieldDTO> cropLogIds;  // Representing CropEntity by IDs
+    private Set<String> staffIds;   // IDs of staff members monitoring this log
+    private Set<String> fieldIds;     // IDs of fields related to this log
+    private Set<String> cropIds;      // IDs of crops associated with this log
 }
