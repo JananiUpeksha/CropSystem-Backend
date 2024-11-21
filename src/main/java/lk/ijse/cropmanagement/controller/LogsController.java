@@ -52,9 +52,37 @@ public class LogsController {
         return new ResponseEntity<>(createdLog, HttpStatus.CREATED);
     }
 
-    /*// Update an existing log
-    @PutMapping("/{id}")
-    public ResponseEntity<LogDTO> updateLog(@PathVariable String id,
+    // Get all logs
+    @GetMapping
+    public ResponseEntity<List<LogDTO>> getAllLogs() {
+        List<LogDTO> logs = logsService.getAllLogs();
+        return ResponseEntity.ok(logs);
+    }
+
+    // Get a specific log by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<LogDTO> getLogById(@PathVariable String id) {
+        try {
+            LogDTO log = logsService.getLogById(id);
+            return ResponseEntity.ok(log);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    // Delete a log
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLog(@PathVariable String id) {
+        try {
+            logsService.deleteLog(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{logId}")
+    public ResponseEntity<LogDTO> updateLog(@PathVariable String logId,
                                             @RequestParam String logDetails,
                                             @RequestParam String date,
                                             @RequestParam(required = false) MultipartFile image2,
@@ -63,9 +91,8 @@ public class LogsController {
                                             @RequestParam(required = false) Set<String> cropIds) {
 
         LogDTO logDTO = new LogDTO();
-        logDTO.setLogId(id);  // Set the ID for updating the log
         logDTO.setLogDetails(logDetails);
-        logDTO.setDate(java.sql.Date.valueOf(date));  // Assuming date is in "yyyy-MM-dd" format
+        logDTO.setDate(java.sql.Date.valueOf(date)); // Assuming date is in "yyyy-MM-dd" format
 
         // Handle image2 if provided
         try {
@@ -76,34 +103,14 @@ public class LogsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        // Set the associated entities' IDs
+        // Set associated entities' IDs
         logDTO.setStaffIds(staffIds);
         logDTO.setFieldIds(fieldIds);
         logDTO.setCropIds(cropIds);
 
         // Update the log
-        LogDTO updatedLog = logsService.updateLog(logDTO);
+        LogDTO updatedLog = logsService.updateLog(logId, logDTO);
         return new ResponseEntity<>(updatedLog, HttpStatus.OK);
     }
 
-    // Get all logs
-    @GetMapping
-    public ResponseEntity<List<LogDTO>> getAllLogs() {
-        List<LogDTO> logs = logsService.getAllLogs();
-        return new ResponseEntity<>(logs, HttpStatus.OK);
-    }
-
-    // Get a specific log by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<LogDTO> getLogById(@PathVariable String id) {
-        LogDTO log = logsService.getLogById(id);
-        return new ResponseEntity<>(log, HttpStatus.OK);
-    }
-
-    // Delete a log
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLog(@PathVariable String id) {
-        logsService.deleteLog(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }*/
 }
