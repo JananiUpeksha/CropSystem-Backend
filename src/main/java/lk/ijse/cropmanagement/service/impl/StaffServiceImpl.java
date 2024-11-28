@@ -116,5 +116,51 @@ public class StaffServiceImpl implements StaffService {
         return mapping.toStaffDTO(staffEntity);
     }
 
+    @Override
+    public StaffDTO save(StaffDTO staffDTO) {
+        // Log the incoming StaffDTO
+        System.out.println("Received StaffDTO: " + staffDTO);
+
+        // Generate the Staff ID dynamically using the AppUtill
+        String generatedStaffId = appUtill.generateId("STAFF");
+        staffDTO.setStaffId(generatedStaffId);
+
+        // Log the staff ID generation
+        System.out.println("Generated Staff ID: " + generatedStaffId);
+
+        // Convert StaffDTO to StaffEntity using the Mapping class
+        StaffEntity staffEntity = mapping.toStaffEntity(staffDTO);
+
+        // Log the StaffEntity object before saving
+        System.out.println("Converted StaffEntity: " + staffEntity);
+
+        // Ensure the staffId is properly set before persisting
+        if (staffEntity.getStaffId() == null || staffEntity.getStaffId().isEmpty()) {
+            throw new DataPersistException("Staff ID is missing.");
+        }
+
+        // Save the StaffEntity to the database using the DAO
+        StaffEntity savedStaff = staffDAO.save(staffEntity);
+
+        // If the entity was not saved, throw a custom exception
+        if (savedStaff == null) {
+            throw new DataPersistException("Staff not saved");
+        }
+
+        // Log successful saving
+        System.out.println("Staff saved successfully: " + savedStaff);
+
+        // Convert the saved StaffEntity back to a StaffDTO and return it
+        return mapping.toStaffDTO(savedStaff);
+    }
+
+
+    @Override
+    public Optional<StaffDTO> findByEmail(String email) {
+        Optional<StaffEntity> byEmail = staffDAO.findByEmail(email);
+
+        return byEmail.map(mapping::toStaffDTO);
+    }
+
 
 }

@@ -2,17 +2,20 @@ package lk.ijse.cropmanagement.service.impl;
 
 import lk.ijse.cropmanagement.dao.StaffDAO;
 import lk.ijse.cropmanagement.dao.UserDAO;
-import lk.ijse.cropmanagement.dto.impl.StaffDTO;
 import lk.ijse.cropmanagement.dto.impl.UserDTO;
 import lk.ijse.cropmanagement.entity.impl.StaffEntity;
 import lk.ijse.cropmanagement.entity.impl.UserEntity;
+import lk.ijse.cropmanagement.exception.UserNotFoundException;
 import lk.ijse.cropmanagement.service.StaffService;
 import lk.ijse.cropmanagement.service.UserService;
 import lk.ijse.cropmanagement.utill.AppUtill;
 import lk.ijse.cropmanagement.utill.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,35 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AppUtill appUtill;
-    /*@Override
-    public void saveUser(UserDTO userDTO) {
-        // Generate User ID
-        String generatedUserId = appUtill.generateId("USER");
-        userDTO.setUserId(generatedUserId);
-
-        // Use the existing saveStaff method in StaffService
-        if (userDTO.getStaff() != null) {
-            staffService.saveStaff(userDTO.getStaff());
-        } else {
-            throw new RuntimeException("Staff details are required for user creation.");
-        }
-
-        // Convert UserDTO to UserEntity
-        UserEntity userEntity = mapping.toUserEntity(userDTO);
-
-        // Retrieve the saved StaffEntity by its ID and associate it with the UserEntity
-        StaffDTO savedStaffDTO = userDTO.getStaff();
-        StaffEntity staffEntity = staffDAO.findById(savedStaffDTO.getStaffId())
-                .orElseThrow(() -> new RuntimeException("Staff not found after saving"));
-
-        userEntity.setStaff(staffEntity);
-
-        // Save the UserEntity
-        UserEntity savedUser = userDAO.save(userEntity);
-        if (savedUser == null) {
-            throw new RuntimeException("User not saved");
-        }
-    }*/
     @Override
     public void saveUser(UserDTO userDTO) {
         // Generate User ID
@@ -88,6 +62,19 @@ public class UserServiceImpl implements UserService {
 
         // Update the UserEntity with the associated StaffEntity
         userDAO.save(userEntity);
+    }
+
+    @Override
+    public UserDetailsService userDetailService() {
+        return userName ->
+                userDAO.findByEmail(userName)
+                        .orElseThrow(()->new UserNotFoundException("User Not Found"));
+    }
+    @Override
+    public Optional<UserDTO> findByEmail(String email) {
+        Optional<UserEntity> byEmail = userDAO.findByEmail(email);
+
+        return byEmail.map(mapping::toUserDTO);
     }
 
 

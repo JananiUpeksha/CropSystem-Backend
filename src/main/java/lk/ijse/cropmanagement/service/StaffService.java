@@ -5,6 +5,7 @@ import lk.ijse.cropmanagement.entity.impl.StaffEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface StaffService {
@@ -20,4 +21,7 @@ public interface StaffService {
 
     StaffDTO findStaffById(String staffId);
 
+    StaffDTO save(StaffDTO staffDTO);
+
+    Optional<StaffDTO> findByEmail(String email);
 }
