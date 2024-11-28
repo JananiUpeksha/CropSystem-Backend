@@ -21,4 +21,6 @@ public class UserEntity {
     @OneToOne
     @JoinColumn(name = "staff_id")
     private StaffEntity staff;
+
+
 }
