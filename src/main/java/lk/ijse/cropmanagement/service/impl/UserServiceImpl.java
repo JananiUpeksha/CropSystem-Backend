@@ -71,10 +71,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User not saved");
         }
 
-        // Create the Staff entity with only ID and role
+        // Create the Staff entity with only ID, role, and email
         StaffEntity staffEntity = new StaffEntity();
         staffEntity.setStaffId(appUtill.generateId("STAFF"));  // Auto-generate staff ID
         staffEntity.setRole(userDTO.getRole());  // Set the role from the UserDTO
+        staffEntity.setEmail(userDTO.getEmail()); // Set the email
 
         // Save the Staff entity
         StaffEntity savedStaff = staffDAO.save(staffEntity);
