@@ -15,10 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/staff")
+//@CrossOrigin(origins = "http://localhost:63342", allowedHeaders = "*", allowCredentials = "true")
 public class StaffController {
     @Autowired
     private StaffService staffService;
-
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveStaff(@RequestBody StaffDTO staffDTO) {
         try {
@@ -53,7 +54,7 @@ public class StaffController {
         }
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    //@PreAuthorize("hasRole('MANAGER')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StaffDTO>> getAllStaff() {
         return new ResponseEntity<>(staffService.getAllStaff(), HttpStatus.OK);
@@ -72,7 +73,7 @@ public class StaffController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping(value = "/{staffId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateStaff(@PathVariable("staffId") String staffId, @RequestBody StaffDTO staffDTO) {
         try {

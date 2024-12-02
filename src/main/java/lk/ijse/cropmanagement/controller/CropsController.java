@@ -2,6 +2,7 @@ package lk.ijse.cropmanagement.controller;
 
 import lk.ijse.cropmanagement.dto.impl.CropDTO;
 import lk.ijse.cropmanagement.service.CropService;
+import lk.ijse.cropmanagement.utill.AppUtill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class CropsController {
             // Handle image1 if provided
             try {
                 if (image1 != null) {
-                    cropDTO.setImage1(Base64.getEncoder().encodeToString(image1.getBytes()));
+                    cropDTO.setImage1(AppUtill.imageToBase64(image1.getBytes()));
                 }
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

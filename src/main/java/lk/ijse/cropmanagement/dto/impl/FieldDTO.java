@@ -79,7 +79,7 @@ import java.util.Set;
 public class FieldDTO {
     private String fieldId;
     private String name;
-    private Point location;
+    private String location;
     private Double size;
     private String image1;
     private String image2;
@@ -87,7 +87,4 @@ public class FieldDTO {
     private Set<String> staffIds;  // Changed to Map for associating Staff IDs
     private Map<String, String> cropIds;   // Map for Crop IDs
 
-    public void setLocation(org.springframework.data.geo.Point point) {
-        this.location = point;
-    }
 }
