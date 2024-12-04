@@ -74,19 +74,29 @@ public class FieldServiceImpl implements FieldService {
                 .collect(Collectors.toList());
     }
 
+    /*@Override
+    public FieldDTO getFieldById(String id) {
+        FieldEntity field = fieldDAO.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Field not found with ID: " + id));
+        return mapping.toFieldDTO(field);
+    }*/
     @Override
     public FieldDTO getFieldById(String id) {
-        /*FieldEntity field = fieldDAO.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Field not found with ID: " + id));
-        return mapping.toFieldDTO(field);*/
-        // Call the custom repository method to fetch the field along with its associated staff members
         FieldEntity field = fieldDAO.findByFieldIdWithStaff(id)
                 .orElseThrow(() -> new IllegalArgumentException("Field not found with ID: " + id));
 
-        // Convert the FieldEntity to FieldDTO and return it
-        return mapping.toFieldDTO(field);
+        // Map the FieldEntity to FieldDTO
+        FieldDTO fieldDTO = mapping.toFieldDTO(field);
 
+        // Extract staff IDs
+        Set<String> staffIds = field.getStaffMembers().stream()
+                .map(StaffEntity::getStaffId)
+                .collect(Collectors.toSet());
+        fieldDTO.setStaffIds(staffIds);
+
+        return fieldDTO;
     }
+
 
     @Override
     public FieldDTO updateField(FieldDTO dto) {

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:63342", allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:63342", allowedHeaders = "*", allowCredentials = "true", methods={RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 @RequestMapping("api/v1/field")
 public class FieldController {
 
