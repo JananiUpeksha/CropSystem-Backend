@@ -2,6 +2,7 @@ package lk.ijse.cropmanagement.controller;
 
 import lk.ijse.cropmanagement.dto.impl.LogDTO;
 import lk.ijse.cropmanagement.service.LogsService;
+import lk.ijse.cropmanagement.utill.AppUtill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class LogsController {
         // Handle image2 if provided
         try {
             if (image2 != null) {
-                logDTO.setImage2(Base64.getEncoder().encodeToString(image2.getBytes()));
+                logDTO.setImage2(AppUtill.imageToBase64(image2.getBytes()));
             }
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

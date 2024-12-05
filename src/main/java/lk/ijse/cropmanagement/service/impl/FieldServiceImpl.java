@@ -125,6 +125,8 @@ public class FieldServiceImpl implements FieldService {
     public void deleteField(String id) {
         FieldEntity field = fieldDAO.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Field not found with ID: " + id));
+        field.getStaffMembers().forEach(staffEntity -> staffEntity.getFields().remove(field));
+        field.getStaffMembers().clear();
         fieldDAO.delete(field);
     }
 }

@@ -20,7 +20,7 @@ public class CropEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String image1;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "field_id")
     private FieldEntity field;
 }

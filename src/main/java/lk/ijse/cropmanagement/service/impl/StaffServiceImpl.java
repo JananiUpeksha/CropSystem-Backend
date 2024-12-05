@@ -1,8 +1,12 @@
 package lk.ijse.cropmanagement.service.impl;
 
+import lk.ijse.cropmanagement.dao.FieldDAO;
 import lk.ijse.cropmanagement.dao.StaffDAO;
+import lk.ijse.cropmanagement.dao.UserDAO;
 import lk.ijse.cropmanagement.dto.impl.StaffDTO;
+import lk.ijse.cropmanagement.entity.impl.FieldEntity;
 import lk.ijse.cropmanagement.entity.impl.StaffEntity;
+import lk.ijse.cropmanagement.entity.impl.UserEntity;
 import lk.ijse.cropmanagement.exception.DataPersistException;
 import lk.ijse.cropmanagement.service.StaffService;
 import lk.ijse.cropmanagement.utill.AppUtill;
@@ -18,6 +22,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StaffServiceImpl implements StaffService {
+    @Autowired
+    private FieldDAO fieldDAO;
+    @Autowired
+    private UserDAO userDAO;
 
     @Autowired
     private StaffDAO staffDAO;
@@ -86,7 +94,36 @@ public class StaffServiceImpl implements StaffService {
             throw new RuntimeException("Staff not found for ID: " + staffId);
         }
         staffDAO.deleteById(staffId);
+        if (!staffDAO.existsById(staffId)) {
+            throw new RuntimeException("Log not found for ID: " + staffId);
+        }
+        staffDAO.deleteById(staffId);
     }
+   // @Override
+   /* public void deleteStaff(String staffId) {
+        // Check if staff exists
+        if (!staffDAO.existsById(staffId)) {
+            throw new RuntimeException("Staff not found for ID: " + staffId);
+        }
+
+        // Check if staff is associated with any fields
+        List<FieldEntity> associatedFields = fieldDAO.findByStaffId(staffId);
+        if (!associatedFields.isEmpty()) {
+            throw new RuntimeException("Cannot delete staff with active field associations.");
+        }
+
+        // Handle user association
+        List<UserEntity> associatedUsers = userDAO.findByStaffId(staffId);
+        for (UserEntity user : associatedUsers) {
+            user.setStaff(null); // Remove the association
+            userDAO.save(user);  // Save the updated user record
+        }
+
+        // Once all associations are handled, delete the staff record
+        staffDAO.deleteById(staffId);
+    }*/
+
+
 
     @Override
     public void updateStaff(String staffId, StaffDTO staffDTO) {
